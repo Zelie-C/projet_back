@@ -11,6 +11,8 @@ import { MoodModel } from './models/MoodModel'
 import { StoryModel } from './models/StoryModel'
 import { BookModel } from './models/BookModel'
 
+import { authRouter } from "./router/auth";
+
 export const sequelize = new Sequelize({
   dialect: 'sqlite',
   storage: 'db/database.sqlite'
@@ -22,6 +24,7 @@ export const Inscription = InscriptionModel(sequelize);
 export const Mood = MoodModel(sequelize);
 export const Story = StoryModel(sequelize);
 export const Book = BookModel(sequelize);
+
 
 User.hasMany(Sub, {foreignKey: 'user_id'})
 Sub.belongsTo(User, {foreignKey: 'user_id'})
@@ -44,6 +47,12 @@ sequelize.sync({force: true})
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+
+const apiRouter = express.Router();
+
+apiRouter.use('/auth', authRouter);
+
+app.use("/api", apiRouter);
 
 const port = parseInt(process.env.PORT as string);
 
